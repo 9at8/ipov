@@ -9,7 +9,9 @@ fn main() {
     };
     let voice = serializer.serialize();
 
-    let mut st = Streamer::create("sine.wav".to_string());
+    let mut st = Streamer::create(
+        "sine.wav".to_string(),
+        512);
     st.write();
 
     println!("{}", voice);
