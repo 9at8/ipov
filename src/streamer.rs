@@ -8,31 +8,48 @@ use std::f32::consts::PI;
 
 pub struct Streamer {
     writer: hound::WavWriter<io::BufWriter<fs::File>>,
+    sample_rate: u32,
+    internal_buffer: i16,
 }
 
 impl Streamer {
-
-    pub fn create(file_name: String) -> Streamer {
+    pub fn create(file_name: String, sample_rate: u32) -> Streamer {
         let spec = hound::WavSpec {
             channels: 1,
-            sample_rate: 44100,
+            sample_rate: sample_rate,
             bits_per_sample: 16,
             sample_format: hound::SampleFormat::Int,
         };
         Streamer {
             writer: hound::WavWriter::create(file_name, spec).unwrap(),
+            sample_rate: sample_rate,
+            internal_buffer: 0,
         }
     }
 
-    // TODO: yeild-style API?
+    // TODO: yield-style API?
     pub fn write(&mut self) -> () {
-        for t in (0 .. 44100).map(|x| x as f32 / 44100.0) {
+        let sample_rate = self.sample_rate;
+        for t in (0 .. sample_rate).map(|x| x as f32 / (sample_rate as f32)) {
             let sample = (t * 2.0 * PI).sin();
             let amplitude = i16::MAX as f32;
             self.writer.write_sample((sample * amplitude) as i16).unwrap();
         }
     }
 
-    // TODO: finalizer
+    pub fn stream_byte(&mut self, byte: u8) {
+        if self.internal_buffer == 0 {
+            self.internal_buffer = (byte as i16) << 8;
+        } else {
+            self.internal_buffer += byte as i16;
+            let amplitude = i16::MAX as f32;
+            let out = ((self.internal_buffer as f32) * amplitude) as i16;
+            self.writer.write_sample(out).unwrap();
 
+            // restore internal buffer state
+            self.internal_buffer = 0;
+        }
+    }
+
+    // TODO: finalizer
 }
