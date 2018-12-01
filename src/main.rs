@@ -1,3 +1,10 @@
+mod serializer;
+
 fn main() {
-    println!("Hello, world!");
+    let serializer = serializer::Serializer {
+        input: String::from("Hello, Serializer!"),
+    };
+    let voice = serializer.serialize();
+
+    println!("{}", voice);
 }
