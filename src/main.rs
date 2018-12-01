@@ -1,10 +1,10 @@
-mod serializer;
+mod deserializer;
 
 fn main() {
-    let serializer = serializer::Serializer {
-        input: String::from("Hello, Serializer!"),
+    let deserializer = deserializer::Deserializer {
+        input: String::from("Hello, Derializer!"),
     };
-    let voice = serializer.serialize();
+    let voice = deserializer.deserialize();
 
     println!("{}", voice);
 }
