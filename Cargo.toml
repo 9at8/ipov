@@ -5,3 +5,4 @@ authors = ["Aditya Thakral <aditya.1998thakral@gmail.com>", "Archer Zhang <arche
 
 [dependencies]
 hound = "3.4.0"
+ears= {git = "https://github.com/jhasse/ears"}
