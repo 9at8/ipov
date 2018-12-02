@@ -10,6 +10,7 @@ pub struct Streamer {
     writer: hound::WavWriter<io::BufWriter<fs::File>>,
     sample_rate: u32,
     internal_buffer: i16,
+    write_now: bool,
 }
 
 impl Streamer {
@@ -24,6 +25,7 @@ impl Streamer {
             writer: hound::WavWriter::create(file_name, spec).unwrap(),
             sample_rate: sample_rate,
             internal_buffer: 0,
+            write_now: false,
         }
     }
 
@@ -38,8 +40,9 @@ impl Streamer {
     }
 
     pub fn stream_byte(&mut self, byte: u8) {
-        if self.internal_buffer == 0 {
+        if !self.write_now {
             self.internal_buffer = (byte as i16) << 8;
+            self.write_now = true;
         } else {
             self.internal_buffer += byte as i16;
 
@@ -54,6 +57,7 @@ impl Streamer {
 
             // restore internal buffer state
             self.internal_buffer = 0;
+            self.write_now = false;
         }
     }
 }
