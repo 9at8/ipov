@@ -42,14 +42,18 @@ impl Streamer {
             self.internal_buffer = (byte as i16) << 8;
         } else {
             self.internal_buffer += byte as i16;
+
+            // convert internal buffer to between -1 and 1
+            let ibf = (self.internal_buffer as f32) / (i16::MAX as f32);
+
             let amplitude = i16::MAX as f32;
-            let out = ((self.internal_buffer as f32) * amplitude) as i16;
+            let out = ((ibf as f32) * amplitude) as i16;
+            //println!("output : {}", ((ibf as f32) * amplitude));
+            //println!("out : {}", out);
             self.writer.write_sample(out).unwrap();
 
             // restore internal buffer state
             self.internal_buffer = 0;
         }
     }
-
-    // TODO: finalizer
 }

@@ -5,4 +5,17 @@ authors = ["Aditya Thakral <aditya.1998thakral@gmail.com>", "Archer Zhang <arche
 
 [dependencies]
 hound = "3.4.0"
+twilio = "0.1.2"
 ears= {git = "https://github.com/jhasse/ears"}
+
+[[bin]]
+name="encode"
+path="src/encoder_cmd.rs"
+
+[[bin]]
+name="decode"
+path="src/decoder_cmd.rs"
+
+[[bin]]
+name="echo"
+path="src/echo_cmd.rs"
