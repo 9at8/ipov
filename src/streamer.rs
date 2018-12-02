@@ -21,21 +21,12 @@ impl Streamer {
             bits_per_sample: 16,
             sample_format: hound::SampleFormat::Int,
         };
+
         Streamer {
             writer: hound::WavWriter::create(file_name, spec).unwrap(),
             sample_rate: sample_rate,
             internal_buffer: 0,
             write_now: false,
-        }
-    }
-
-    // TODO: yield-style API?
-    pub fn write(&mut self) -> () {
-        let sample_rate = self.sample_rate;
-        for t in (0 .. sample_rate).map(|x| x as f32 / (sample_rate as f32)) {
-            let sample = (t * 2.0 * PI).sin();
-            let amplitude = i16::MAX as f32;
-            self.writer.write_sample((sample * amplitude) as i16).unwrap();
         }
     }
 
